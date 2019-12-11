@@ -1,41 +1,41 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
-import Button from "../Button";
+import Timer from "./timerPresenter";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { actionCreator as tomatoActions } from "../../reducer";
 
-class Timer extends React.Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <View style={styles.upArea}>
-          <Text style={styles.time}>25:00</Text>
-        </View>
+// 1. state 받아오기
+mapStateProps = state => {
+  const { isPlaying, timerDuration, elapsed } = state;
 
-        <View style={styles.downArea}>
-          <Button iconName="play-circle-o" action={() => alert("재생")} />
-          <Button iconName="stop-circle-o" action={() => alert("멈춤")} />
-        </View>
-      </View>
-    );
-  }
-}
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  upArea: {
-    flex: 2,
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  downArea: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  time: {
-    fontSize: 40
-  }
-});
-export default Timer;
+  console.log(isPlaying, timerDuration, elapsed);
+
+  return {
+    isPlaying,
+    timerDuration,
+    elapsed
+  };
+};
+
+//elapsed 순서
+//reducer에 state만들어지고,
+//return
+//return한걸 index에서 state받아오고 -> state==>props(필요한 것만 받아옴)
+//return
+//presenter에서 state를 props로 받아오고
+//console.log
+
+// 2. function 받아오기
+//dispatch : 전달받은 function
+//tomatoActions : reducer를 의미
+//전달받은 startTimer과 startTimer를 연결하겠다
+mapDispatchToProps = dispatch => {
+  return {
+    startTimer: bindActionCreators(tomatoActions.startTimer, dispatch),
+    restartTimer: bindActionCreators(tomatoActions.restartTimer, dispatch),
+    addSecond: bindActionCreators(tomatoActions.addSecond, dispatch)
+  };
+};
+
+// result : 받아온 녀석과 Timer를 함께 리턴하기
+
+export default connect(mapStateProps, mapDispatchToProps)(Timer);
